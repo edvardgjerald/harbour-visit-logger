@@ -92,8 +92,8 @@ export function App() {
             });
             break;
         }
-      } catch {
-        // ignore parse errors
+      } catch (err) {
+        console.warn("[App] WebSocket message error:", err, "Raw data:", event.data);
       }
     };
 
