@@ -23,23 +23,26 @@ export function App() {
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reconnectAttempts = useRef(0);
 
+  const fetchVisits = useCallback(async (isBackground = false) => {
+    if (!isBackground) setIsLoadingVisits(true);
+    try {
+      const res = await fetch("/api/visits?pageSize=50");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setVisits(data.visits);
+      setTotalVisits(data.total);
+    } catch (err) {
+      console.error("[App] Visit fetch failed:", err);
+    } finally {
+      setIsLoadingVisits(false);
+    }
+  }, []);
+
   // Fetch initial visits from REST API
   useEffect(() => {
-    async function fetchVisits() {
-      try {
-        const res = await fetch("/api/visits?pageSize=50");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        setVisits(data.visits);
-        setTotalVisits(data.total);
-      } catch (err) {
-        console.error("[App] Visit fetch failed:", err);
-      } finally {
-        setIsLoadingVisits(false);
-      }
-    }
     fetchVisits();
-  }, []);
+  }, [fetchVisits]);
+
 
   // Single WebSocket connection for all real-time data
   const connect = useCallback(function connectImpl() {
@@ -104,6 +107,25 @@ export function App() {
 
     ws.onerror = () => ws.close();
   }, []);
+
+  // Resync when a sleeping tab becomes active again
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        // Fetch visits that might have occurred while the tab was asleep
+        fetchVisits(true);
+
+        // Ensure the WebSocket is alive. If we lost connection, reconnect.
+        if (wsRef.current?.readyState === WebSocket.CLOSED || !wsRef.current) {
+          connect();
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [fetchVisits, connect]);
 
   useEffect(() => {
     connect();
