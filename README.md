@@ -6,7 +6,7 @@ A modern, full-stack monorepo application for tracking real-time maritime traffi
 
 - **Real-Time AIS Tracking**: Connects to [AISStream.io](https://aisstream.io/) to ingest live Automatic Identification System (AIS) telemetry from vessels at sea.
 - **Live Map Visualization**: Interactive React Leaflet map displaying live vessel movements and highlighted harbour zones.
-- **Smart Geofencing Engine**: Computes point-in-polygon math in real-time to detect when a vessel enters a mapped harbour zone.
+- **Smart Zone Detection**: Computes point-in-polygon math in real-time to detect when a vessel enters a mapped harbour zone.
 - **Stateful WebSockets**: In-memory vessel cache hydrates new frontend connections instantly so there are no blank screens on page load.
 - **Persistent Visit Logging**: Stores harbour visits in a local SQLite database using Prisma ORM with one row per vessel per zone (upsert model).
 - **End-to-End Type Safety**: Strictly typed using TypeScript monorepo workspaces, with Zod runtime validation on incoming external AIS telemetry.
@@ -17,7 +17,7 @@ A modern, full-stack monorepo application for tracking real-time maritime traffi
 The project is structured as an NPM workspaces monorepo:
 
 - **`@vessel/shared` (`/packages/shared`)**: Shared TypeScript interfaces (e.g., `VesselPosition`, `ServerMessage`), Zod schemas for AIS message validation, and hardcoded `HARBOUR_ZONES` configuration. Used by both client and server.
-- **`backend` (`/backend`)**: Node.js server powered by Express. Handles AISStream WebSocket ingestion, geofence detection, SQLite persistence (Prisma), and WebSocket broadcasting to frontend clients.
+- **`backend` (`/backend`)**: Node.js server powered by Express. Handles AISStream WebSocket ingestion, harbour zone visit detection, SQLite persistence (Prisma), and WebSocket broadcasting to frontend clients.
 - **`frontend` (`/frontend`)**: Vite + React SPA. Consumes a single WebSocket connection for live vessel positions and visit alerts, and renders an interactive map alongside a visit log.
 
 ## 🚀 Getting Started
