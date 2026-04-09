@@ -63,6 +63,8 @@ export function App() {
           case "vessel_update":
             setVessels((prev) => {
               const next = new Map(prev);
+              // Delete first to ensure it's pushed to the back of the insertion order
+              next.delete(message.payload.mmsi);
               next.set(message.payload.mmsi, message.payload);
               if (next.size > 200) {
                 const oldest = next.keys().next().value;

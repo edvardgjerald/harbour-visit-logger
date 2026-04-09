@@ -73,6 +73,8 @@ export class WSBroadcaster {
    */
   broadcast(message: ServerMessage): void {
     if (message.type === "vessel_update") {
+      // Delete first to ensure it's pushed to the back of the insertion order
+      this.vesselCache.delete(message.payload.mmsi);
       this.vesselCache.set(message.payload.mmsi, message);
       if (this.vesselCache.size > 300) {
         // Keep memory bounded
