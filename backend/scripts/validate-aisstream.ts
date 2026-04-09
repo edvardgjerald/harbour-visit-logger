@@ -14,7 +14,7 @@ if (!apiKey) {
 const socket = new WebSocket(config.aisstream.url);
 
 console.log(
-  `Connecting to AISStream with key: ${Math.floor(apiKey.length / 2)} chars...`
+  `Connecting to AISStream with key: ${apiKey.substring(0, Math.floor(apiKey.length / 2))}...`
 );
 
 socket.onopen = function () {
