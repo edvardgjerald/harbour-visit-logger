@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model HarbourVisit {
+  id         String   @id @default(cuid())
+  mmsi       Int
+  vesselName String?
+  latitude   Float
+  longitude  Float
+  speed      Float?
+  heading    Float?
+  zoneId     String   // Maps to static config
+  timestamp  DateTime @default(now())
+
+  @@unique([mmsi, zoneId])
+  @@index([timestamp])
+}

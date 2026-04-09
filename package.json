@@ -1,0 +1,33 @@
+{
+  "name": "harbour-visit-logger",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -n shared,backend,frontend -c cyan,green,magenta \"npm run dev -w @vessel/shared\" \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w @vessel/shared && npm run build -w frontend && npm run build -w backend",
+    "postinstall": "npm run db:generate -w backend",
+    "start": "npm run start -w backend",
+    "db:push": "npm run db:push -w backend",
+    "test": "npm run test -ws --if-present",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,css,md}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.58.1"
+  }
+}

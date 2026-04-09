@@ -1,0 +1,23 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Harbour Visit Logger — Docker Compose
+# Single service: API + WebSocket + Frontend on port 3000
+# ═══════════════════════════════════════════════════════════════════════
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - AISSTREAM_API_KEY=${AISSTREAM_API_KEY}
+      - DATABASE_URL=file:/app/data/dev.db
+      - PORT=3000
+      - NODE_ENV=production
+    volumes:
+      - sqlite-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:
